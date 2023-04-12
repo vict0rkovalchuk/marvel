@@ -32,10 +32,19 @@ class RandomChar extends Component {
       char: { name, description, thumbnail, homepage, wiki }
     } = this.state;
 
+    const thumbnailStyle =
+      thumbnail ===
+      'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+        ? {
+            objectFit: 'contain'
+          }
+        : null;
+
     return (
       <div className="randomchar">
         <div className="randomchar__block">
           <img
+            style={thumbnailStyle}
             src={thumbnail}
             alt="Random character"
             className="randomchar__img"
