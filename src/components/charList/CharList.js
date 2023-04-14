@@ -41,7 +41,10 @@ class CharList extends Component {
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = !(loading || error) ? (
-      <View characters={characters} />
+      <View
+        onCharSelected={this.props.onCharSelected}
+        characters={characters}
+      />
     ) : null;
 
     return (
@@ -57,9 +60,9 @@ class CharList extends Component {
   }
 }
 
-const View = ({ characters }) => {
+const View = ({ characters, onCharSelected }) => {
   const charactersList = characters.map(({ name, thumbnail, id }) => (
-    <li data-id={id} key={id} className="char__item">
+    <li onClick={() => onCharSelected(id)} key={id} className="char__item">
       <img src={thumbnail} alt={name} />
       <div className="char__name">{name}</div>
     </li>
