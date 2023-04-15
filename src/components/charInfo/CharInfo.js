@@ -112,7 +112,9 @@ const View = ({ char }) => {
           </div>
         </div>
       </div>
-      <div className="char__descr">{description}</div>
+      <div className="char__descr">
+        {!description ? 'No Description' : description}
+      </div>
       {comicsList.length === 0 ? (
         <div className="char__comics">Comics not found</div>
       ) : (

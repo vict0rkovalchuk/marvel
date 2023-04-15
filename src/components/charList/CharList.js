@@ -48,12 +48,7 @@ class CharList extends Component {
 
   onCharactersLoaded = newCharacters => {
     let ended = false;
-    if (
-      // ==
-      newCharacters.length < 9 &&
-      // ==
-      this.state.totalCharacters - 9 <= this.state.offset
-    ) {
+    if (this.state.totalCharacters - 9 <= this.state.offset) {
       ended = true;
     }
 
