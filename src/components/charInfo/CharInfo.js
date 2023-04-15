@@ -1,4 +1,5 @@
 import { Component } from 'react/cjs/react.production.min';
+import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -71,6 +72,10 @@ class CharInfo extends Component {
     );
   }
 }
+
+CharInfo.propTypes = {
+  charId: PropTypes.number
+};
 
 const View = ({ char }) => {
   const { comics, description, homepage, name, thumbnail, wiki } = char;

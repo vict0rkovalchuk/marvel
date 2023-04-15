@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -13,7 +14,7 @@ class CharList extends Component {
     loading: true,
     error: false,
     newItemLoading: false,
-    offset: 1521,
+    offset: 210,
     charEnded: false,
     totalCharacters: null
   };
@@ -47,7 +48,12 @@ class CharList extends Component {
 
   onCharactersLoaded = newCharacters => {
     let ended = false;
-    if (this.state.totalCharacters - 9 <= this.state.offset) {
+    if (
+      // ==
+      newCharacters.length < 9 &&
+      // ==
+      this.state.totalCharacters - 9 <= this.state.offset
+    ) {
       ended = true;
     }
 
@@ -112,6 +118,10 @@ class CharList extends Component {
     );
   }
 }
+
+CharList.propTypes = {
+  onCharSelected: PropTypes.func
+};
 
 const View = ({ characters, onCharSelected }) => {
   const charactersList = characters.map(({ name, thumbnail, id }) => (
