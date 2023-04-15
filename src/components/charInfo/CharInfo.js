@@ -83,7 +83,9 @@ const View = ({ char }) => {
 
   const thumbnailStyle =
     thumbnail ===
-    'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+      'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ||
+    thumbnail ===
+      'http://i.annihil.us/u/prod/marvel/i/mg/f/60/4c002e0305708.gif'
       ? {
           objectFit: 'contain'
         }
