@@ -119,12 +119,24 @@ CharList.propTypes = {
 };
 
 const View = ({ characters, onCharSelected }) => {
-  const charactersList = characters.map(({ name, thumbnail, id }) => (
-    <li onClick={() => onCharSelected(id)} key={id} className="char__item">
-      <img src={thumbnail} alt={name} />
-      <div className="char__name">{name}</div>
-    </li>
-  ));
+  const charactersList = characters.map(({ name, thumbnail, id }) => {
+    const thumbnailStyle =
+      thumbnail ===
+        'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ||
+      thumbnail ===
+        'http://i.annihil.us/u/prod/marvel/i/mg/f/60/4c002e0305708.gif'
+        ? {
+            objectFit: 'fill'
+          }
+        : null;
+
+    return (
+      <li onClick={() => onCharSelected(id)} key={id} className="char__item">
+        <img style={thumbnailStyle} src={thumbnail} alt={name} />
+        <div className="char__name">{name}</div>
+      </li>
+    );
+  });
 
   return <ul className="char__grid">{charactersList}</ul>;
 };
