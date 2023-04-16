@@ -19,6 +19,12 @@ class CharList extends Component {
     totalCharacters: null
   };
 
+  itemRefs = [];
+
+  addRef = ref => {
+    this.itemRefs.push(ref);
+  };
+
   marvelService = new MarvelService();
 
   componentDidMount() {
@@ -63,6 +69,12 @@ class CharList extends Component {
     });
   };
 
+  onFocusItem = itemId => {
+    this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+    this.itemRefs[itemId].classList.add('char__item_selected');
+    this.itemRefs[itemId].focus();
+  };
+
   onError = () => {
     this.setState({ loading: false, error: true });
   };
@@ -89,6 +101,8 @@ class CharList extends Component {
     const spinner = loading ? <Spinner /> : null;
     const content = !(loading || error) ? (
       <View
+        addRef={this.addRef}
+        onFocusItem={this.onFocusItem}
         onCharSelected={this.props.onCharSelected}
         characters={characters}
       />
@@ -118,8 +132,8 @@ CharList.propTypes = {
   onCharSelected: PropTypes.func
 };
 
-const View = ({ characters, onCharSelected }) => {
-  const charactersList = characters.map(({ name, thumbnail, id }) => {
+const View = ({ characters, onCharSelected, addRef, onFocusItem }) => {
+  const charactersList = characters.map(({ name, thumbnail, id }, i) => {
     const thumbnailStyle =
       thumbnail ===
         'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ||
@@ -131,7 +145,22 @@ const View = ({ characters, onCharSelected }) => {
         : null;
 
     return (
-      <li onClick={() => onCharSelected(id)} key={id} className="char__item">
+      <li
+        ref={addRef}
+        tabIndex={0}
+        onClick={() => {
+          onCharSelected(id);
+          onFocusItem(i);
+        }}
+        onKeyDown={e => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            onCharSelected(id);
+            onFocusItem(i);
+          }
+        }}
+        key={id}
+        className="char__item"
+      >
         <img style={thumbnailStyle} src={thumbnail} alt={name} />
         <div className="char__name">{name}</div>
       </li>
