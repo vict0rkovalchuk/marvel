@@ -15,8 +15,7 @@ class CharList extends Component {
     error: false,
     newItemLoading: false,
     offset: 210,
-    charEnded: false,
-    totalCharacters: null
+    charEnded: false
   };
 
   itemRefs = [];
@@ -29,7 +28,6 @@ class CharList extends Component {
 
   componentDidMount() {
     this.updateCharacters();
-    this.updateTotalCharacters();
   }
 
   onRequest = offset => {
@@ -46,15 +44,9 @@ class CharList extends Component {
     });
   };
 
-  onTotalCharactersLoaded = total => {
-    this.setState({
-      totalCharacters: total
-    });
-  };
-
   onCharactersLoaded = newCharacters => {
     let ended = false;
-    if (this.state.totalCharacters - 9 <= this.state.offset) {
+    if (this.marvelService.totalCharacters - 9 <= this.state.offset) {
       ended = true;
     }
 
@@ -77,13 +69,6 @@ class CharList extends Component {
 
   onError = () => {
     this.setState({ loading: false, error: true });
-  };
-
-  updateTotalCharacters = () => {
-    this.marvelService
-      .getTotalCharacters()
-      .then(this.onTotalCharactersLoaded)
-      .catch(this.onError);
   };
 
   updateCharacters = () => {
