@@ -16,9 +16,7 @@ const RandomChar = () => {
     updateChar();
   }, []);
 
-  const onCharLoaded = char => {
-    setChar(char);
-  };
+  const onCharLoaded = char => setChar(char);
 
   const updateChar = () => {
     clearError();

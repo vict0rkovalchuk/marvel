@@ -14,12 +14,8 @@ const CharList = ({ onCharSelected }) => {
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const {
-    loading,
-    error,
-    /* totalCharacters, */ getAllCharacters,
-    clearError
-  } = useMarvelService();
+  const { loading, error, getTotalCharacters, getAllCharacters, clearError } =
+    useMarvelService();
 
   useEffect(() => {
     updateCharacters();
@@ -30,12 +26,11 @@ const CharList = ({ onCharSelected }) => {
     getAllCharacters(offset).then(onCharactersLoaded);
   };
 
-  const onCharactersLoaded = newCharacters => {
+  const onCharactersLoaded = async newCharacters => {
+    // try to use useMemo hook
+    let totalCharacters = await getTotalCharacters();
     let ended = false;
-    // if (totalCharacters - 9 <= offset) {
-    //   ended = true;
-    // }
-    if (newCharacters.length < 9) {
+    if (totalCharacters - 9 <= offset) {
       ended = true;
     }
 

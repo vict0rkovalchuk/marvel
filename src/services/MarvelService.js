@@ -6,15 +6,21 @@ const useMarvelService = () => {
   const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
   const _apiKey = '5fb08fddb575a55d82219f9e2320f5e7';
   const _baseOffset = 210;
-  // let totalCharacters = null;
 
   const getAllCharacters = async (offset = _baseOffset) => {
     const res = await request(
       `${_apiBase}characters?limit=9&offset=${offset}&apikey=${_apiKey}`
     );
-    // totalCharacters = res.data.total;
 
     return res.data.results.map(_transformCharacter);
+  };
+
+  const getTotalCharacters = async (offset = _baseOffset) => {
+    const res = await request(
+      `${_apiBase}characters?limit=9&offset=${offset}&apikey=${_apiKey}`
+    );
+
+    return res.data.total;
   };
 
   const getCharacter = async id => {
@@ -37,7 +43,7 @@ const useMarvelService = () => {
   return {
     loading,
     error,
-    // totalCharacters,
+    getTotalCharacters,
     getAllCharacters,
     getCharacter,
     clearError
