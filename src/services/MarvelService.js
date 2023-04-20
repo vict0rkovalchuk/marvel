@@ -1,45 +1,28 @@
-class MarvelService {
-  _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-  _apiKey = '5fb08fddb575a55d82219f9e2320f5e7';
-  _baseOffset = 210;
-  totalCharacters = null;
+import { useHttp } from '../hooks/http.hook';
 
-  getResource = async url => {
-    const res = await fetch(url);
+const useMarvelService = () => {
+  const { loading, request, error, clearError } = useHttp();
 
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    }
+  const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+  const _apiKey = '5fb08fddb575a55d82219f9e2320f5e7';
+  const _baseOffset = 210;
+  // let totalCharacters = null;
 
-    return await res.json();
-  };
-
-  getAllCharacters = async (offset = this._baseOffset) => {
-    const res = await this.getResource(
-      `${this._apiBase}characters?limit=9&offset=${offset}&apikey=${this._apiKey}`
+  const getAllCharacters = async (offset = _baseOffset) => {
+    const res = await request(
+      `${_apiBase}characters?limit=9&offset=${offset}&apikey=${_apiKey}`
     );
+    // totalCharacters = res.data.total;
 
-    this.totalCharacters = res.data.total;
-
-    return res.data.results.map(this._transformCharacter);
+    return res.data.results.map(_transformCharacter);
   };
 
-  getCharacter = async id => {
-    const res = await this.getResource(
-      `${this._apiBase}characters/${id}?apikey=${this._apiKey}`
-    );
-    return this._transformCharacter(res.data.results[0]);
+  const getCharacter = async id => {
+    const res = await request(`${_apiBase}characters/${id}?apikey=${_apiKey}`);
+    return _transformCharacter(res.data.results[0]);
   };
 
-  getTotalCharacters = async (offset = this._baseOffset) => {
-    const res = await this.getResource(
-      `${this._apiBase}characters?limit=1&offset=${offset}&apikey=${this._apiKey}`
-    );
-
-    return res.data.total;
-  };
-
-  _transformCharacter = char => {
+  const _transformCharacter = char => {
     return {
       name: char.name,
       description: char.description,
@@ -50,6 +33,15 @@ class MarvelService {
       comics: char.comics.items.slice(0, 10)
     };
   };
-}
 
-export default MarvelService;
+  return {
+    loading,
+    error,
+    // totalCharacters,
+    getAllCharacters,
+    getCharacter,
+    clearError
+  };
+};
+
+export default useMarvelService;

@@ -4,44 +4,42 @@ import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charList.scss';
 
 const CharList = ({ onCharSelected }) => {
   const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const marvelService = new MarvelService();
+  const {
+    loading,
+    error,
+    /* totalCharacters, */ getAllCharacters,
+    clearError
+  } = useMarvelService();
 
   useEffect(() => {
     updateCharacters();
   }, []);
 
-  const onRequest = offset => {
-    onCharListLoading();
-    marvelService
-      .getAllCharacters(offset)
-      .then(onCharactersLoaded)
-      .catch(onError);
-  };
-
-  const onCharListLoading = () => {
-    setNewItemLoading(true);
+  const onRequest = (offset, initial) => {
+    initial ? setNewItemLoading(false) : setNewItemLoading(true);
+    getAllCharacters(offset).then(onCharactersLoaded);
   };
 
   const onCharactersLoaded = newCharacters => {
     let ended = false;
-    if (marvelService.totalCharacters - 9 <= offset) {
+    // if (totalCharacters - 9 <= offset) {
+    //   ended = true;
+    // }
+    if (newCharacters.length < 9) {
       ended = true;
     }
 
     setCharacters(characters => [...characters, ...newCharacters]);
-    setLoading(false);
     setNewItemLoading(false);
     setOffset(offset => offset + 9);
     setCharEnded(ended);
@@ -57,31 +55,25 @@ const CharList = ({ onCharSelected }) => {
     itemRefs.current[itemId].focus();
   };
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-
   const updateCharacters = () => {
-    marvelService.getAllCharacters().then(onCharactersLoaded).catch(onError);
+    getAllCharacters()
+      .then(onCharactersLoaded)
+      .catch(() => setCharEnded(true));
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? (
-    <View
-      onFocusItem={onFocusItem}
-      onCharSelected={onCharSelected}
-      characters={characters}
-      itemRefs={itemRefs}
-    />
-  ) : null;
+  const spinner = loading && !newItemLoading ? <Spinner /> : null;
 
   return (
     <div className="char__list">
       {errorMessage}
       {spinner}
-      {content}
+      <View
+        onFocusItem={onFocusItem}
+        onCharSelected={onCharSelected}
+        characters={characters}
+        itemRefs={itemRefs}
+      />
       <button
         style={{ display: charEnded ? 'none' : 'block' }}
         disabled={newItemLoading}
