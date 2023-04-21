@@ -21,8 +21,8 @@ const CharList = ({ onCharSelected }) => {
     updateCharacters();
   }, []);
 
-  const onRequest = (offset, initial) => {
-    initial ? setNewItemLoading(false) : setNewItemLoading(true);
+  const onRequest = offset => {
+    setNewItemLoading(true);
     getAllCharacters(offset).then(onCharactersLoaded);
   };
 
