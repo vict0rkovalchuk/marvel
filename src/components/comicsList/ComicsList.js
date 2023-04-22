@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -70,11 +70,11 @@ const View = ({ comicsList }) => {
   const comicsItems = comicsList.map(({ name, thumbnail, price, id }, i) => {
     return (
       <li key={i} className="comics__item">
-        <a href="#">
+        <Link to={`/comics/${id}`}>
           <img src={thumbnail} alt={name} className="comics__item-img" />
           <div className="comics__item-name">{name}</div>
           <div className="comics__item-price">{price}</div>
-        </a>
+        </Link>
       </li>
     );
   });
