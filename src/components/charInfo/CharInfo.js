@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -53,11 +54,16 @@ CharInfo.propTypes = {
 const View = ({ char }) => {
   const { comics, description, homepage, name, thumbnail, wiki } = char;
 
-  const comicsList = comics.map(({ name }, i) => (
-    <li key={i} className="char__comics-item">
-      {name}
-    </li>
-  ));
+  const comicsList = comics.map(({ name, resourceURI }, i) => {
+    const id = resourceURI.split('/').pop();
+    return (
+      <li key={i} className="char__comics-item">
+        <Link className="char__comics-link" to={`/comics/${id}`}>
+          {name}
+        </Link>
+      </li>
+    );
+  });
 
   const thumbnailStyle =
     thumbnail ===
@@ -72,7 +78,7 @@ const View = ({ char }) => {
   return (
     <>
       <div className="char__basics">
-        <img style={thumbnailStyle} src={thumbnail} alt="abyss" />
+        <img style={thumbnailStyle} src={thumbnail} alt={name} />
         <div>
           <div className="char__info-name">{name}</div>
           <div className="char__btns">
