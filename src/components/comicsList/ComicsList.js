@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -11,7 +12,7 @@ import './comicsList.scss';
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [newItemLoading, setNewItemLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(210);
   const [comicsEnded, setComicsEnded] = useState(false);
 
   const { loading, error, getTotalComics, getAllComics } = useMarvelService();
@@ -68,18 +69,26 @@ const ComicsList = () => {
 
 const View = ({ comicsList }) => {
   const comicsItems = comicsList.map(({ name, thumbnail, price, id }, i) => {
+    const duration = 500;
+
     return (
-      <li key={i} className="comics__item">
-        <Link to={`/comics/${id}`}>
-          <img src={thumbnail} alt={name} className="comics__item-img" />
-          <div className="comics__item-name">{name}</div>
-          <div className="comics__item-price">{price}</div>
-        </Link>
-      </li>
+      <CSSTransition key={id} timeout={duration} classNames="csstransition">
+        <li key={i} className="comics__item">
+          <Link to={`/comics/${id}`}>
+            <img src={thumbnail} alt={name} className="comics__item-img" />
+            <div className="comics__item-name">{name}</div>
+            <div className="comics__item-price">{price}</div>
+          </Link>
+        </li>
+      </CSSTransition>
     );
   });
 
-  return <ul className="comics__grid">{comicsItems}</ul>;
+  return (
+    <ul className="comics__grid">
+      <TransitionGroup component={null}>{comicsItems}</TransitionGroup>
+    </ul>
+  );
 };
 
 export default ComicsList;

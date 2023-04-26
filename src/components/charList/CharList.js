@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -98,30 +99,38 @@ const View = ({ characters, onCharSelected, onFocusItem, itemRefs }) => {
           }
         : null;
 
+    const duration = 500;
+
     return (
-      <li
-        ref={el => (itemRefs.current[i] = el)}
-        tabIndex={0}
-        onClick={() => {
-          onCharSelected(id);
-          onFocusItem(i);
-        }}
-        onKeyDown={e => {
-          if (e.key === ' ' || e.key === 'Enter') {
+      <CSSTransition key={id} timeout={duration} classNames="csstransition">
+        <li
+          ref={el => (itemRefs.current[i] = el)}
+          tabIndex={0}
+          onClick={() => {
             onCharSelected(id);
             onFocusItem(i);
-          }
-        }}
-        key={id}
-        className="char__item"
-      >
-        <img style={thumbnailStyle} src={thumbnail} alt={name} />
-        <div className="char__name">{name}</div>
-      </li>
+          }}
+          onKeyDown={e => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              onCharSelected(id);
+              onFocusItem(i);
+            }
+          }}
+          key={id}
+          className="char__item"
+        >
+          <img style={thumbnailStyle} src={thumbnail} alt={name} />
+          <div className="char__name">{name}</div>
+        </li>
+      </CSSTransition>
     );
   });
 
-  return <ul className="char__grid">{charactersList}</ul>;
+  return (
+    <ul className="char__grid">
+      <TransitionGroup component={null}>{charactersList}</TransitionGroup>
+    </ul>
+  );
 };
 
 export default CharList;
